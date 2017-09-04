@@ -1,0 +1,21 @@
+goodweb:
+    image: goodguywebserver
+    container_name: goodguyweb
+    ports:
+        - "8080:80"
+    expose:
+        - "80"
+    environment:
+        - NGINX_HOST=goodguy.nach.os
+        - NGINX_PORT=80
+
+badweb:
+    image: badguywebserver
+    container_name: badguyweb
+    ports:
+        - "8081:80"
+    expose:
+        - "80"
+    environment:
+        - NGINX_HOST=goodguy.nach.os
+        - NGINX_PORT=80
