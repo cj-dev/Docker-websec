@@ -59,6 +59,7 @@ badguy_cert.serial = 901
 badguy_cert.not_before = Time.now
 badguy_cert.not_after = badguy_cert.not_before + 365 * 24 * 60 * 60 # 1 year validity
 badguy_cert.subject = target_servername
+badguy_cert.sign(badguy_key, OpenSSL::Digest::SHA256.new)
 
 open 'badguy_privkey.pem', 'w' do |io| io.write(badguy_key.to_pem) end
 open 'badguy_pubkey.pem', 'w' do |io| io.write(badguy_key.public_key.to_pem) end

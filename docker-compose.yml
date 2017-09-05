@@ -7,15 +7,14 @@ goodweb:
         - "80"
     environment:
         - NGINX_HOST=goodguy.nach.os
-        - NGINX_PORT=80
 
 badweb:
     image: badguywebserver
     container_name: badguyweb
     ports:
         - "8081:80"
+        - "8444:443"
     expose:
         - "80"
     environment:
         - NGINX_HOST=goodguy.nach.os
-        - NGINX_PORT=80
