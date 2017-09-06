@@ -3,6 +3,7 @@ goodweb:
     container_name: goodguyweb
     ports:
         - "8080:80"
+        - "8443:443"
     expose:
         - "80"
     environment:
