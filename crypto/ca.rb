@@ -24,9 +24,13 @@ ca_cert.add_extension(ca_extensions.create_extension("authorityKeyIdentifier","k
 
 # CA signs itself. It'll be fine. Trust it.
 ca_cert.sign(ca_key, OpenSSL::Digest::SHA256.new)
-open 'ca_privkey.pem', 'w' do |io| io.write(ca_key.to_pem) end
-open 'ca_pubkey.pem', 'w' do |io| io.write(ca_key.public_key.to_pem) end
-open 'ca_cert.pem', 'w' do |io| io.write(ca_cert.to_pem) end
+begin
+    Dir.mkdir('ca', 0755)
+rescue Errno::EEXIST
+end
+open 'ca/privkey.pem', 'w' do |io| io.write(ca_key.to_pem) end
+open 'ca/pubkey.pem', 'w' do |io| io.write(ca_key.public_key.to_pem) end
+open 'ca/cert.pem', 'w' do |io| io.write(ca_cert.to_pem) end
 
 target_servername = OpenSSL::X509::Name.parse('CN=legit.nach.os')
 
@@ -46,9 +50,13 @@ legit_cert.add_extension(legit_extensions.create_extension("keyUsage","digitalSi
 legit_cert.add_extension(legit_extensions.create_extension("subjectKeyIdentifier","hash",false))
 
 legit_cert.sign(ca_key, OpenSSL::Digest::SHA256.new)
-open 'legit_privkey.pem', 'w' do |io| io.write(legit_key.to_pem) end
-open 'legit_pubkey.pem', 'w' do |io| io.write(legit_key.public_key.to_pem) end
-open 'legit_cert.pem', 'w' do |io| io.write(legit_cert.to_pem) end
+begin
+    Dir.mkdir('legit', 0755)
+rescue Errno::EEXIST
+end
+open 'legit/privkey.pem', 'w' do |io| io.write(legit_key.to_pem) end
+open 'legit/pubkey.pem', 'w' do |io| io.write(legit_key.public_key.to_pem) end
+open 'legit/cert.pem', 'w' do |io| io.write(legit_cert.to_pem) end
 
 # Badguy makes up its own certificate
 badguy_key = OpenSSL::PKey::RSA.new(2048)
@@ -59,9 +67,13 @@ badguy_cert.serial = 901
 badguy_cert.not_before = Time.now
 badguy_cert.not_after = badguy_cert.not_before + 365 * 24 * 60 * 60 # 1 year validity
 badguy_cert.subject = target_servername
-badguy_cert.sign(badguy_key, OpenSSL::Digest::SHA256.new)
 
-open 'badguy_privkey.pem', 'w' do |io| io.write(badguy_key.to_pem) end
-open 'badguy_pubkey.pem', 'w' do |io| io.write(badguy_key.public_key.to_pem) end
-open 'badguy_cert.pem', 'w' do |io| io.write(badguy_cert.to_pem) end
+badguy_cert.sign(badguy_key, OpenSSL::Digest::SHA256.new)
+begin
+    Dir.mkdir('badguy', 0755)
+rescue Errno::EEXIST
+end
+open 'badguy/privkey.pem', 'w' do |io| io.write(badguy_key.to_pem) end
+open 'badguy/pubkey.pem', 'w' do |io| io.write(badguy_key.public_key.to_pem) end
+open 'badguy/cert.pem', 'w' do |io| io.write(badguy_cert.to_pem) end
 
