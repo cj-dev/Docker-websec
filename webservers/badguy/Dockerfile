@@ -1,8 +1,7 @@
-FROM nginx
+FROM python
 
-COPY index.html /usr/share/nginx/html/index.html
-RUN mkdir /etc/nginx/ssl
-COPY etc/nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf
-COPY etc/nginx/ssl/ /etc/nginx/ssl/
+COPY flask /var/www/flask
+RUN cd /var/www/flask && python setup.py install
 
-CMD ["nginx", "-g", "daemon off;"]
+WORKDIR /var/www/flask/evilapp
+CMD ["python", "application.py"]
