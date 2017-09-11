@@ -1,10 +1,10 @@
 from setuptools import setup
 
 setup(
-    name='Evil app',
+    name='Morally Conflicted Flask App',
     version='0.1',
     long_description=__doc__,
-    packages=['evilapp'],
+    packages=['app'],
     include_package_data=True,
     zip_safe=False,
     install_requires=['Flask']

@@ -1,21 +1,21 @@
 goodweb:
-    image: goodguywebserver
-    container_name: goodguyweb
+    image: flaskwebserver
+    container_name: legitweb
     ports:
-        - "8080:80"
+        - "8080:5000"
         - "8443:443"
     expose:
-        - "80"
+        - "5000"
     environment:
-        - NGINX_HOST=goodguy.nach.os
+        - APPLICATION_ROLE=legit
 
 badweb:
-    image: badguywebserver
-    container_name: badguyweb
+    image: flaskwebserver
+    container_name: evilweb
     ports:
-        - "8081:80"
+        - "8081:5000"
         - "8444:443"
     expose:
-        - "80"
+        - "5000"
     environment:
-        - NGINX_HOST=goodguy.nach.os
+        - APPLICATION_ROLE=evil
