@@ -1,6 +1,12 @@
 #!/bin/env ruby
 require 'openssl'
 
+# Dir for results
+begin
+    Dir.mkdir('ssl', 0755)
+rescue Errno::EEXIST
+end
+
 # CA private/public key pairs
 ca_key = OpenSSL::PKey::RSA.new(2048)
 
@@ -25,12 +31,12 @@ ca_cert.add_extension(ca_extensions.create_extension("authorityKeyIdentifier","k
 # CA signs itself. It'll be fine. Trust it.
 ca_cert.sign(ca_key, OpenSSL::Digest::SHA256.new)
 begin
-    Dir.mkdir('ca', 0755)
+    Dir.mkdir('ssl/ca', 0755)
 rescue Errno::EEXIST
 end
-open 'ca/privkey.pem', 'w' do |io| io.write(ca_key.to_pem) end
-open 'ca/pubkey.pem', 'w' do |io| io.write(ca_key.public_key.to_pem) end
-open 'ca/cert.pem', 'w' do |io| io.write(ca_cert.to_pem) end
+open 'ssl/ca/privkey.pem', 'w' do |io| io.write(ca_key.to_pem) end
+open 'ssl/ca/pubkey.pem', 'w' do |io| io.write(ca_key.public_key.to_pem) end
+open 'ssl/ca/cert.pem', 'w' do |io| io.write(ca_cert.to_pem) end
 
 target_servername = OpenSSL::X509::Name.parse('CN=legit.nach.os')
 
@@ -51,29 +57,29 @@ legit_cert.add_extension(legit_extensions.create_extension("subjectKeyIdentifier
 
 legit_cert.sign(ca_key, OpenSSL::Digest::SHA256.new)
 begin
-    Dir.mkdir('legit', 0755)
+    Dir.mkdir('ssl/legit', 0755)
 rescue Errno::EEXIST
 end
-open 'legit/privkey.pem', 'w' do |io| io.write(legit_key.to_pem) end
-open 'legit/pubkey.pem', 'w' do |io| io.write(legit_key.public_key.to_pem) end
-open 'legit/cert.pem', 'w' do |io| io.write(legit_cert.to_pem) end
+open 'ssl/legit/privkey.pem', 'w' do |io| io.write(legit_key.to_pem) end
+open 'ssl/legit/pubkey.pem', 'w' do |io| io.write(legit_key.public_key.to_pem) end
+open 'ssl/legit/cert.pem', 'w' do |io| io.write(legit_cert.to_pem) end
 
 # Badguy makes up its own certificate
-badguy_key = OpenSSL::PKey::RSA.new(2048)
-badguy_cert = OpenSSL::X509::Certificate.new
-badguy_cert.public_key = badguy_key.public_key
-badguy_cert.version = 2
-badguy_cert.serial = 901 
-badguy_cert.not_before = Time.now
-badguy_cert.not_after = badguy_cert.not_before + 365 * 24 * 60 * 60 # 1 year validity
-badguy_cert.subject = target_servername
+evil_key = OpenSSL::PKey::RSA.new(2048)
+evil_cert = OpenSSL::X509::Certificate.new
+evil_cert.public_key = evil_key.public_key
+evil_cert.version = 2
+evil_cert.serial = 901 
+evil_cert.not_before = Time.now
+evil_cert.not_after = evil_cert.not_before + 365 * 24 * 60 * 60 # 1 year validity
+evil_cert.subject = target_servername
 
-badguy_cert.sign(badguy_key, OpenSSL::Digest::SHA256.new)
+evil_cert.sign(evil_key, OpenSSL::Digest::SHA256.new)
 begin
-    Dir.mkdir('badguy', 0755)
+    Dir.mkdir('ssl/evil', 0755)
 rescue Errno::EEXIST
 end
-open 'badguy/privkey.pem', 'w' do |io| io.write(badguy_key.to_pem) end
-open 'badguy/pubkey.pem', 'w' do |io| io.write(badguy_key.public_key.to_pem) end
-open 'badguy/cert.pem', 'w' do |io| io.write(badguy_cert.to_pem) end
+open 'ssl/evil/privkey.pem', 'w' do |io| io.write(evil_key.to_pem) end
+open 'ssl/evil/pubkey.pem', 'w' do |io| io.write(evil_key.public_key.to_pem) end
+open 'ssl/evil/cert.pem', 'w' do |io| io.write(evil_cert.to_pem) end
 
