@@ -2,12 +2,12 @@
 
 set -e
 
-if [ -z "$1" ]
-then
-    echo "Supply a volume container name";
-    exit 0;
-fi
-docker volume create $1 > /dev/null;
-docker run -v $1:/data/ssl --name temp_volume_helper alpine true > /dev/null;
-docker cp ssl/ temp_volume_helper:/data/ssl;
-docker rm temp_volume_helper;
+docker volume create legit_ssl > /dev/null;
+docker run -v legit_ssl:/data/ssl --name temp_volume_helper alpine true > /dev/null;
+docker cp ssl/legit/ temp_volume_helper:/data/ssl/certs;
+docker rm temp_volume_helper > /dev/null;
+
+docker volume create evil_ssl > /dev/null;
+docker run -v evil_ssl:/data/ssl --name temp_volume_helper alpine true > /dev/null;
+docker cp ssl/evil/ temp_volume_helper:/data/ssl/certs;
+docker rm temp_volume_helper > /dev/null;

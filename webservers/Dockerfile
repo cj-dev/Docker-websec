@@ -1,7 +1,7 @@
 FROM python
 
-COPY flask /var/www/flask
-RUN cd /var/www/flask && python setup.py install
+COPY flask /opt/flask
+RUN cd /opt/flask && python setup.py install
 
-WORKDIR /var/www/flask/app
+WORKDIR /opt/flask/app
 CMD ["python", "application.py"]

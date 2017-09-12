@@ -14,4 +14,6 @@ def index():
     else: return render_template('legit_index.html')
 
 if __name__ == '__main__':
-    app.run(debug=True,host='0.0.0.0')
+    context = ('/opt/flask/ssl/certs/cert.pem',
+            '/opt/flask/ssl/certs/privkey.pem')
+    app.run(ssl_context=context, host='0.0.0.0')
