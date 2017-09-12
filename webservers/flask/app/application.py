@@ -1,5 +1,6 @@
 from flask import Flask, render_template
 import os
+import ssl
 
 app = Flask(__name__)
 if os.environ['APPLICATION_ROLE'] == 'evil':
@@ -14,6 +15,7 @@ def index():
     else: return render_template('legit_index.html')
 
 if __name__ == '__main__':
-    context = ('/opt/flask/ssl/certs/cert.pem',
+    context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
+    context.load_cert_chain('/opt/flask/ssl/certs/cert.pem',
             '/opt/flask/ssl/certs/privkey.pem')
     app.run(ssl_context=context, host='0.0.0.0')
