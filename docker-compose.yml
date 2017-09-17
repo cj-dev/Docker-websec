@@ -45,6 +45,20 @@ services:
         environment:
             - APPLICATION_ROLE=evil
 
+    dns:
+        image: dnsmasq
+        container_name: dns
+        hostname: dns
+        ports:
+            - "53:53"
+        expose:
+            - "53"
+        environment:
+            - LEGIT_IP=172.100.100.101
+            - LEGIT_DNSNAME=legit.nach.os
+            - EVIL_IP=172.100.100.101
+            - EVIL_DNSNAME=evil.nach.os
+
 volumes:
     legit_ssl:
         external: true
